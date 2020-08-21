@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, useState, useEffect } from "react";
+import React, { useLayoutEffect, useState, useEffect } from "react";
 import * as am4core from "@amcharts/amcharts4/core";
 import am4geodata_worldLow from "@amcharts/amcharts4-geodata/worldLow";
 import * as am4maps from "@amcharts/amcharts4/maps";
@@ -11,7 +11,6 @@ import "./Main.css";
 
 am4core.useTheme(am4themes_animated);
 function Globe(props) {
-  const [country, setCountry] = useState(null);
   const [infected, setInfected] = useState(0);
   const [deaths, setDeaths] = useState(0);
   const [recovered, setRecovered] = useState(0);
@@ -73,6 +72,7 @@ function Globe(props) {
     var hs = polygonTemplate.states.create("hover");
     hs.properties.fill = chart.colors.getIndex(0).brighten(-0.5);
 
+    // eslint-disable-next-line
     let animation;
     setTimeout(function () {
       animation = chart.animate(
@@ -82,7 +82,7 @@ function Globe(props) {
     }, 3000);
 
     chart.seriesContainer.events.on("down", function () {
-      //  animation.stop();
+      //   animation.stop();
     });
 
     polygonTemplate.events.on(
@@ -98,20 +98,26 @@ function Globe(props) {
           clickedCountryName = "UK";
         }
 
-        console.log(clickedCountryName);
         const results = await axios(
           `https://corona-virus-stats.herokuapp.com/api/v1/cases/countries-search?search=${clickedCountryName}`
         );
 
-        const c = results.data.data.rows[0];
-        console.log(c);
-        setCountry(c);
-        setTitle(c.country);
-        setInfected(Number(c.total_cases.split(",").join("")));
-        setDeaths(Number(c.total_deaths.split(",").join("")));
-        setRecovered(Number(c.total_recovered.split(",").join("")));
+        if (results.data.data.rows.length >= 1) {
+          const c = results.data.data.rows[0];
+          console.log(c);
 
-        console.log("clicked on ", ev.target.dataItem.dataContext.name);
+          setTitle(c.country);
+          setInfected(Number(c.total_cases.split(",").join("")));
+          setDeaths(Number(c.total_deaths.split(",").join("")));
+          setRecovered(Number(c.total_recovered.split(",").join("")));
+
+          console.log("clicked on ", ev.target.dataItem.dataContext.name);
+        } else {
+          setTitle("No Data Available");
+          setTimeout(function () {
+            setTitle("Worldwide");
+          }, 3000);
+        }
       },
       this
     );
@@ -121,7 +127,7 @@ function Globe(props) {
     return () => {
       chart.dispose();
     };
-  }, [setCountry]);
+  }, []);
 
   return (
     <>

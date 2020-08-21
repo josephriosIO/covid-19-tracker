@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Globe from "./Globe";
-import axios from "axios";
-import CountUp from "react-countup";
+
 import "./Main.css";
 
 function Main() {
