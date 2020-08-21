@@ -16,6 +16,7 @@ function Globe(props) {
   const [recovered, setRecovered] = useState(0);
   const [lastUpdated, setLastUpdated] = useState("");
   const [title, setTitle] = useState("Worldwide");
+  const [flag, setFlag] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,15 +102,16 @@ function Globe(props) {
         const results = await axios(
           `https://corona-virus-stats.herokuapp.com/api/v1/cases/countries-search?search=${clickedCountryName}`
         );
-
+        console.log(results.data);
         if (results.data.data.rows.length >= 1) {
           const c = results.data.data.rows[0];
-          console.log(c);
 
           setTitle(c.country);
           setInfected(Number(c.total_cases.split(",").join("")));
           setDeaths(Number(c.total_deaths.split(",").join("")));
           setRecovered(Number(c.total_recovered.split(",").join("")));
+          setLastUpdated(results.data.data.last_update);
+          setFlag(c.flag);
 
           console.log("clicked on ", ev.target.dataItem.dataContext.name);
         } else {
@@ -132,7 +134,9 @@ function Globe(props) {
   return (
     <>
       <div className="box-container">
-        <h2>{title}</h2>
+        <h2>{title} </h2>
+        {flag.length > 1 ? <img id="flag" src={flag} /> : null}
+
         <div className="box" id="infected">
           <p>Total Infected</p>
           <CountUp end={infected} duration={8} start={0} className="totals" />

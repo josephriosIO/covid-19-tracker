@@ -32,6 +32,10 @@
   font-size: 3rem;
 }
 
+#flag {
+  width: 50%;
+}
+
 @media only screen and (min-width: 600px) {
   .box-container {
     flex-flow: row;
