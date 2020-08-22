@@ -135,7 +135,7 @@ function Globe(props) {
     <>
       <div className="box-container">
         <h2>{title} </h2>
-        {flag.length > 1 ? <img id="flag" src={flag} /> : null}
+        {flag.length > 1 ? <img alt="" id="flag" src={flag} /> : null}
 
         <div className="box" id="infected">
           <p>Total Infected</p>
